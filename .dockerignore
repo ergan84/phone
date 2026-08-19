@@ -1,0 +1,6 @@
+.git
+.claude
+.env
+*.bak
+DEPLOY.md
+DOCKER.md
