@@ -47,7 +47,7 @@ body .content .header .buttons {
 body .content .header .buttons .login {
   width: 100px;
   height: 40px;
-  background-color: #00bccc;
+  background-color: #4d604d;
   border: none;
   font-family: Arial, Helvetica, sans-serif;
   font-size: 18px;
@@ -63,13 +63,13 @@ body .content .header .buttons #myInput {
   height: 40px;
   width: 220px;
   outline: none;
-  border: 2px solid #00bccc;
+  border: 2px solid #4d604d;
   border-radius: 4px;
   font-size: 16px;
 }
 
 body .content .header .buttons .search {
-  background-color: #00bccc;
+  background-color: #4d604d;
   border: none;
   width: 51px;
   height: 40px;
@@ -89,6 +89,6 @@ body .content .select {
 }
 
 .phone_table thead tr {
-  background-color: #00bccc !important;
+  background-color: #4d604d !important;
   color: white !important;
 }

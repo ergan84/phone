@@ -81,7 +81,26 @@ function buildQrSvg($text, $moduleSize = 4) {
         return '';
     }
 
-    ob_start();
-    $qr->printSVG($moduleSize);
-    return ob_get_clean();
+    // Собственный рендер вместо $qr->printSVG(): та выдаёт по <rect> на
+    // КАЖДЫЙ модуль (и чёрный, и белый) — ~200 КБ на код. Здесь один
+    // белый фон + один объединённый <path> со всеми тёмными модулями —
+    // в разы компактнее при том же визуальном результате.
+    $count = $qr->getModuleCount();
+    $size = $count * $moduleSize;
+
+    $path = '';
+    for ($r = 0; $r < $count; $r++) {
+        for ($c = 0; $c < $count; $c++) {
+            if ($qr->isDark($r, $c)) {
+                $x = $c * $moduleSize;
+                $y = $r * $moduleSize;
+                $path .= "M{$x} {$y}h{$moduleSize}v{$moduleSize}h-{$moduleSize}z";
+            }
+        }
+    }
+
+    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' . $size . ' ' . $size . '" width="' . $size . '" height="' . $size . '">'
+        . '<rect width="' . $size . '" height="' . $size . '" fill="#fff"/>'
+        . '<path d="' . $path . '" fill="#000" shape-rendering="crispEdges"/>'
+        . '</svg>';
 }

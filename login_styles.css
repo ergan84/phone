@@ -22,7 +22,7 @@ form{
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    border: 2px solid #00bccc;
+    border: 2px solid #4d604d;
 }
 p{
     text-align: center;
@@ -33,7 +33,7 @@ input{
     height: 33px;
     margin: 15px;
     border-radius: 5px;
-    border: 2px solid #00bccc;
+    border: 2px solid #4d604d;
     outline: none;
 }
 ::-webkit-input-placeholder{
@@ -46,12 +46,12 @@ input[type=submit]{
     height: 33px;
     margin: 5px;
     color: white;
-    background-color: #00bccc;
+    background-color: #4d604d;
     font-size: 16px;
     border: none;
     font-weight: 800;
     border-radius: 5px;
 }
 input[type=submit]:hover{
-    background-color:#04c9db; 
+    background-color:#5b715b; 
 }

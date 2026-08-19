@@ -59,16 +59,36 @@ $(document).on('click', '.show-qr', function (e) {
   $('#qr-modal-img').attr('src', $(this).attr('data-qr-src'));
   $('#qr-modal').modal('show');
 });
+
+// Клик по должности/отделу/компании — фильтр по точному совпадению
+// в своей колонке (номер колонки — в data-col). Повторный клик снимает.
+$(document).on('click', 'td.filter-col', function () {
+  var table = $('.example_phone').DataTable();
+  var col = parseInt($(this).attr('data-col'), 10);
+  var value = $(this).text().trim();
+  var escaped = value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  var pattern = '^' + escaped + '$';
+
+  if (table.column(col).search() === pattern) {
+    table.column(col).search('').draw();
+  } else {
+    table.column(col).search(pattern, true, false).draw();
+  }
+});
 } );
 </script>	
 </head>
 <body>
 
 <div class="ui segment" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;">
-<h1 class="ui header" style="margin:0;">Телефонный справочник</h1>
+<div style="display:flex; align-items:center; gap:16px;">
+    <img src="images/logo.png" alt="AlmaWine" style="height:40px; width:auto;">
+    <h1 class="ui header" style="margin:0;">Телефонный справочник</h1>
+</div>
 <div style="display:flex; align-items:center; gap:12px;">
     <span>Здравствуйте, <b><?php echo htmlentities($_SESSION['fullname'] ?? $_SESSION['username'] ?? ''); ?></b></span>
-    <a href="logout.php" class="ui button" style="background-color:#00bccc; color:white;">Выйти</a>
+    <a href="logout.php" class="ui button" style="background-color:#4d604d; color:white;">Выйти</a>
+</div>
 </div>
 
 <div class="ui small modal" id="qr-modal">
@@ -80,6 +100,7 @@ $(document).on('click', '.show-qr', function (e) {
         <div style="font-size:12px; color:rgba(0,0,0,.6); margin-top:12px;">Отсканируйте, чтобы сохранить контакт</div>
     </div>
 </div>
+
 
 <?php
     
@@ -210,12 +231,23 @@ echo ("<table cellpadding='0' cellspacing='0' border='0' class='ui celled stripe
     // Выделяем жирным текстом руководителей, директоров, начальников
     echo ("<tr style='"); if (isLeadership($title)) {echo ("font-weight: bold;'>");} else{ echo ("font-weight: normal;'>");}
 
-    if (!empty($jpegphoto)) {
-        $photo_src = "data:image/jpeg;base64,".base64_encode($jpegphoto);
-    } elseif (!empty($thumbnailphoto)) {
-        $photo_src = "data:image/jpeg;base64,".base64_encode($thumbnailphoto);
+    // В таблице фото всего 28px — берём маленькую миниатюру, чтобы не тянуть
+    // в HTML полноразмерное фото (jpegphoto) там, где оно всё равно сожмётся.
+    // В карточке, наоборот, приоритет полноразмерному.
+    if (!empty($thumbnailphoto)) {
+        $photo_thumb_src = "data:image/jpeg;base64,".base64_encode($thumbnailphoto);
+    } elseif (!empty($jpegphoto)) {
+        $photo_thumb_src = "data:image/jpeg;base64,".base64_encode($jpegphoto);
     } else {
-        $photo_src = "images/no_photo.png";
+        $photo_thumb_src = "images/no_photo.png";
+    }
+
+    if (!empty($jpegphoto)) {
+        $photo_full_src = "data:image/jpeg;base64,".base64_encode($jpegphoto);
+    } elseif (!empty($thumbnailphoto)) {
+        $photo_full_src = "data:image/jpeg;base64,".base64_encode($thumbnailphoto);
+    } else {
+        $photo_full_src = "images/no_photo.png";
     }
 
     echo ("
@@ -224,7 +256,7 @@ echo ("<table cellpadding='0' cellspacing='0' border='0' class='ui celled stripe
             <i class='close icon'></i>
             <div class='header' style='margin-bottom: 20px;'>Информация о сотруднике</div>
             <div class='image content '>
-            <img class='ui medium rounded image fluid' src='".$photo_src."'/>
+            <img class='ui medium rounded image fluid' src='".$photo_full_src."'/>
             </div>
             <div class='description fluid'>
             <div class='ui message fluid'>
@@ -254,14 +286,14 @@ echo ("<table cellpadding='0' cellspacing='0' border='0' class='ui celled stripe
             </div>
             
             <a class='ui show-modal' data-modal='#item-modal-".$i."' style='cursor:pointer;'>
-                <img src='".$photo_src."' style='width:28px;height:28px;object-fit:cover;border-radius:50%;vertical-align:middle;margin-right:8px;'/>".$cn."
+                <img src='".$photo_thumb_src."' style='width:28px;height:28px;object-fit:cover;border-radius:50%;vertical-align:middle;margin-right:8px;'/>".$cn."
             </a></td>
             <td><i class='envelope outline icon' style='color: green;'></i> <a href='mailto:".$mail."'>".$mail."</a></td>
 			<td><i class='mobile alternate icon' style='color: green;'></i> ".$telephonenumber."<span style='display:none;'> ".$telephonenumberDigits."</span></td>
             <td><i class='phone icon' style='color: green;'></i> ".$pager."</td>
-            <td>".$title."</td>
-            <td>".$department."</td>
-            <td>".$company."</td>
+            <td class='filter-col' data-col='4' style='cursor:pointer;' title='Показать только эту должность'>".$title."</td>
+            <td class='filter-col' data-col='5' style='cursor:pointer;' title='Показать только этот отдел'>".$department."</td>
+            <td class='filter-col' data-col='6' style='cursor:pointer;' title='Показать только эту компанию'>".$company."</td>
             <td style='text-align:center;'><a class='show-qr' data-qr-src='qr.php?i=".$i."' data-name='".htmlspecialchars($cn, ENT_QUOTES)."' style='cursor:pointer;' title='Показать QR-визитку'><i class='qrcode icon' style='color: green; font-size:1.3em;'></i></a></td>
             </tr>
             
@@ -274,6 +306,5 @@ echo ("<table cellpadding='0' cellspacing='0' border='0' class='ui celled stripe
 echo ("</tbody>
         </table>");
 ?>
-</div>
 </body>
-</html>	
+</html>

@@ -60,10 +60,12 @@ if(isset($_POST['username']) && isset($_POST['password'])){
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Телефонный справочник</title>
     <link rel="stylesheet" href="login_styles.css">
 </head>
 <body>
+
+    <div class="logo"><img src="images/logo.png" alt="AlmaWine" style="height:100%; max-width:280px; object-fit:contain;"></div>
 
     <form action="" method="POST">
         <p>Зайдите под своим аккаунтом, чтобы позвонить сотруднику</p>
