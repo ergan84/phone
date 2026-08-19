@@ -21,4 +21,9 @@ return [
     'dir_base_dn'     => getenv('PHONEBOOK_DIR_BASE_DN') ?: 'dc=almatytrade,dc=kz',
     'dir_login'       => getenv('PHONEBOOK_DIR_LOGIN') ?: 'yerzhan.abduhaimov@almatytrade.kz',
     'dir_password'    => $dirPassword,
+
+    // Кэш выгрузки из AD в Redis
+    'redis_host' => getenv('PHONEBOOK_REDIS_HOST') ?: 'redis',
+    'redis_port' => (int)(getenv('PHONEBOOK_REDIS_PORT') ?: 6379),
+    'redis_ttl'  => (int)(getenv('PHONEBOOK_REDIS_TTL') ?: 300),
 ];

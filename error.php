@@ -6,6 +6,6 @@
     <link rel="stylesheet" href="login_styles.css">
 </head>
 <body>
-    <p>Неверный логин или пароль.<br><a href="index.php">Вернуться</a></p>
+    <p>Неверный логин или пароль.<br><a href="/">Вернуться</a></p>
 </body>
 </html>

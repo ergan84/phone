@@ -6,8 +6,17 @@ services:
     environment:
       PHONEBOOK_AUTH_LDAP: "ldap://10.10.10.2"
       PHONEBOOK_DOMAIN_PREFIX: "ALMATYTRADE"
-      PHONEBOOK_DIR_LDAP: "172.16.65.2"
+      PHONEBOOK_DIR_LDAP: "10.10.10.2"
       PHONEBOOK_DIR_BASE_DN: "dc=almatytrade,dc=kz"
       PHONEBOOK_DIR_LOGIN: "yerzhan.abduhaimov@almatytrade.kz"
       PHONEBOOK_DIR_PASSWORD: "${PHONEBOOK_DIR_PASSWORD:?PHONEBOOK_DIR_PASSWORD is required, set it in .env}"
+      PHONEBOOK_REDIS_HOST: "redis"
+      PHONEBOOK_REDIS_PORT: "6379"
+      PHONEBOOK_REDIS_TTL: "300"
+    depends_on:
+      - redis
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
     restart: unless-stopped

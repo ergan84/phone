@@ -1,10 +1,12 @@
 FROM php:8.1-apache
 
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends libldap2-dev \
+    && apt-get install -y --no-install-recommends libldap2-dev libonig-dev \
     && rm -rf /var/lib/apt/lists/* \
     && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu \
     && docker-php-ext-install ldap mbstring \
+    && pecl install redis \
+    && docker-php-ext-enable redis \
     && a2enmod headers rewrite
 
 # Официальный образ по умолчанию AllowOverride None — включаем .htaccess проекта

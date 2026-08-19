@@ -1,6 +1,26 @@
 <IfModule dir_module>
     DirectoryIndex index.php index.html
 </IfModule>
+
+<IfModule mod_rewrite.c>
+RewriteEngine On
+
+# Прямой заход на index.php/error.php — редиректим на чистый адрес,
+# чтобы в адресной строке не мелькали имена файлов.
+RewriteCond %{THE_REQUEST} \s/+index\.php[\s?] [NC]
+RewriteRule ^index\.php$ /? [R=301,L]
+
+RewriteCond %{THE_REQUEST} \s/+error\.php[\s?] [NC]
+RewriteRule ^error\.php$ /login-error [R=301,L]
+
+RewriteCond %{THE_REQUEST} \s/+phone\.php[\s?] [NC]
+RewriteRule ^phone\.php$ /directory [R=301,L]
+
+# Внутреннее сопоставление чистого адреса с реальным файлом
+RewriteRule ^login-error$ error.php [L]
+RewriteRule ^directory$ phone.php [L]
+</IfModule>
+
 AddDefaultCharset UTF-8
 AddCharset UTF-8 .html
 <FilesMatch "\.(html)$">
